@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType">
+            <con:wsdl ref="B2BVendorServices/EnterpriseServices/wsdl/validation"/>
+            <con:binding>
+                <con:name>DSS40Binding</con:name>
+                <con:namespace>http://www.moneygram.com/Validation10</con:namespace>
+            </con:binding>
+        </con:binding>
+        <oper:operations>
+            <oper:monitoring enabled="false" aggregationInterval="10" level="pipeline"/>
+            <oper:reporting>true</oper:reporting>
+            <oper:logging enabled="true" level="debug"/>
+            <oper:sla-alerting enabled="true" level="normal"/>
+            <oper:pipeline-alerting enabled="true" level="normal"/>
+        </oper:operations>
+    </con:coreEntry>
+    <con:router xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:env="http://www.bea.com/wli/config/env" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con3="http://www.bea.com/wli/sb/typesystem/config" xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config">
+        <con:pipeline type="request" name="PipelinePairNode1_request"/>
+        <con:pipeline type="response" name="PipelinePairNode1_response"/>
+        <con:flow>
+            <con:pipeline-node name="PipelinePairNode1">
+                <con:request>PipelinePairNode1_request</con:request>
+                <con:response>PipelinePairNode1_response</con:response>
+            </con:pipeline-node>
+            <con:branch-node type="operation" name="BranchNode1">
+                <con:context/>
+                <con:branch-table>
+                    <con:branch name="validate">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:route-node name="RouteNode1">
+                                <con:context>
+                                    <con2:varNsDecl namespace="http://www.moneygram.com/Validation10" prefix="val"/>
+                                    <con3:variable name="ValidationResponseVar" path="$body" asChild="true">
+                                        <con3:schema ref="B2BVendorServices/EnterpriseServices/xsd/validation" element="validationResponse"/>
+                                    </con3:variable>
+                                </con:context>
+                                <con:actions>
+                                    <con1:route>
+                                        <con2:id>_ActionId-2371450368373882698--6e20761c.13da88c7ea4.-784f</con2:id>
+                                        <con1:service ref="B2BVendorServices/EnterpriseServices/BusinessServices/BBMGValidationBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                        <con1:operation>validate</con1:operation>
+                                        <con1:outboundTransform/>
+                                        <con1:responseTransform>
+                                            <con4:replace varName="body" contents-only="true">
+                                                <con2:id>_ActionId-2371450368373882698--6e20761c.13da88c7ea4.-750f</con2:id>
+                                                <con4:location>
+                                                    <con2:xpathText>.</con2:xpathText>
+                                                </con4:location>
+                                                <con4:expr>
+                                                    <con2:xqueryTransform>
+                                                        <con2:resource ref="B2BVendorServices/EnterpriseServices/Transformations/ValidationResponseTransformation"/>
+                                                        <con2:param name="validationResponse1">
+                                                            <con2:path>$body/val:validationResponse</con2:path>
+                                                        </con2:param>
+                                                    </con2:xqueryTransform>
+                                                </con4:expr>
+                                            </con4:replace>
+                                        </con1:responseTransform>
+                                    </con1:route>
+                                </con:actions>
+                            </con:route-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:default-branch>
+                        <con:flow/>
+                    </con:default-branch>
+                </con:branch-table>
+            </con:branch-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

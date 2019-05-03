@@ -1,0 +1,33 @@
+<!-- edited with XMLSpy v2006 sp2 U (http://www.altova.com) by XMLSPY 2005 Enterprise Ed. Release 3, Installed for 3 users (with SMP from 2005-08-29 to 2006-08-30) (Caribou Lake) --><definitions targetNamespace="http://www.moneygram.com/Validation10" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://www.moneygram.com/Validation10">
+	<types>
+		<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    	<xsd:import namespace="http://www.moneygram.com/Validation10" schemaLocation="../xsd/validation.xsd">
+    	</xsd:import></xsd:schema>
+	
+	</types>
+	<message name="validationRequest">
+		<part name="validationRequest" element="tns:validationRequest"/>
+	</message>
+	<message name="validationResponse">
+		<part name="validationResponse" element="tns:validationResponse"/>
+	</message>
+	<portType name="DSS40PortType">
+		<operation name="validate">
+			<input message="tns:validationRequest"/>
+			<output message="tns:validationResponse"/>
+		</operation>
+	</portType>
+	<binding name="DSS40Binding" type="tns:DSS40PortType">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<operation name="validate">
+			<soap:operation soapAction="" style="document"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+	</binding>
+	<service name="DSS40">
+		<port name="DSS40PortType" binding="tns:DSS40Binding">
+			<soap:address location="http://localhost:9080/dss/services/Validation10"/>
+		</port>
+	</service>
+</definitions>
